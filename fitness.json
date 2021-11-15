@@ -1,0 +1,104 @@
+{
+  "familyMembers": [
+    {
+      "id": 11,
+      "firstName": "Adam",
+      "lastName": "Lenter",
+      "gender": "Male",
+      "dob": "1975-10-12"
+    },
+    {
+      "id": 17,
+      "firstName": "Jamie",
+      "lastName": "Lenter",
+      "gender": "Female",
+      "dob": "1980-08-10"
+    },
+    {
+      "id": 29,
+      "firstName": "Jeff",
+      "lastName": "Lenter",
+      "gender": "Other",
+      "dob": "2010-03-05"
+    },
+    {
+      "id": 31,
+      "firstName": "Nick",
+      "lastName": "Lenter",
+      "gender": "Male",
+      "dob": "2012-12-18"
+    }
+  ],
+  "dailyLogs": [
+    {
+      "id": 1,
+      "familyMemberID": 11,
+      "month": 5,
+      "dateNumber": 15,
+      "year": 2021,
+      "foodBalance": 1,
+      "foodQuantity": 1,
+      "exercise": 1
+    },
+    {
+      "id": 2,
+      "familyMemberID": 29,
+      "month": 11,
+      "dateNumber": 8,
+      "year": 2021,
+      "foodBalance": 1,
+      "foodQuantity": 0,
+      "exercise": 1
+    },
+    {
+      "id": 3,
+      "familyMemberID": 29,
+      "month": 11,
+      "dateNumber": 17,
+      "year": 2020,
+      "foodBalance": 1,
+      "foodQuantity": 1,
+      "exercise": 1
+    },
+    {
+      "familyMemberID": 31,
+      "month": 11,
+      "dateNumber": 12,
+      "year": 2021,
+      "foodBalance": 1,
+      "foodQuantity": 1,
+      "exercise": 1,
+      "id": 4
+    },
+    {
+      "familyMemberID": 17,
+      "month": 11,
+      "dateNumber": 12,
+      "year": 2021,
+      "foodBalance": 1,
+      "foodQuantity": 1,
+      "exercise": 1,
+      "id": 5
+    },
+    {
+      "familyMemberID": 11,
+      "month": 11,
+      "dateNumber": 12,
+      "year": 2021,
+      "foodBalance": 0,
+      "foodQuantity": 0,
+      "exercise": 0,
+      "id": 6
+    },
+    {
+      "familyMemberID": 17,
+      "month": 11,
+      "dateNumber": 11,
+      "year": 2021,
+      "foodBalance": 0,
+      "foodQuantity": 1,
+      "exercise": 1,
+      "id": 7
+    }
+  ]
+}
