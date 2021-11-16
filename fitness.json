@@ -96,6 +96,16 @@
       "foodQuantity": 1,
       "exercise": 1,
       "id": 7
+    },
+    {
+      "familyMemberID": 32,
+      "month": 11,
+      "dateNumber": 15,
+      "year": 2021,
+      "foodBalance": 1,
+      "foodQuantity": 0,
+      "exercise": 1,
+      "id": 8
     }
   ]
 }
