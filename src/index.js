@@ -778,11 +778,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 screenContent.appendChild(dateh2);
 
                 const paragraph = document.createElement("p");
-                paragraph.innerHTML = `I ate a healthy balance of food: ${displayYes1No0(dailyLog.foodBalance)}
+                paragraph.innerHTML = `I ate a healthy balance of food: <strong>${displayYes1No0(dailyLog.foodBalance)}</strong>
                     <br />
-                    I ate an appropriate number of calories: ${displayYes1No0(dailyLog.foodQuantity)}
+                    I ate an appropriate number of calories: <strong>${displayYes1No0(dailyLog.foodQuantity)}</strong>
                     <br /> 
-                    I exercised vigorously for at least 30 minutes: ${displayYes1No0(dailyLog.exercise)}
+                    I exercised vigorously for at least 30 minutes: <strong>${displayYes1No0(dailyLog.exercise)}</strong>
                     <br />`;
                 screenContent.appendChild(paragraph);
 
@@ -791,6 +791,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 editLink.textContent = "Click here to edit";
                 paragraph.appendChild(editLink);
                 editLink.addEventListener("click", (event) => displayEnterEditDailyLog(dateAndFamilyMemberInformation, 2));
+
+                displayReturnToMonthStatisticsScreenLink(monthNumber, year);   
             })
         })
     }
@@ -821,7 +823,16 @@ document.addEventListener('DOMContentLoaded', function() {
             screenContent.innerHTML = "";
 
             const screenH1 = document.createElement("h1");
-            screenH1.textContent = "Enter Daily Log";
+
+            if(enter1Edit2 == 1) {
+                //In enter mode:
+                screenH1.textContent = "Enter Daily Log";
+            }
+            else {
+                //In edit mode:
+                screenH1.textContent = "Edit Daily Log";
+            }
+            
             screenContent.appendChild(screenH1);
 
             const nameh2 = document.createElement("h2");
@@ -879,6 +890,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         showMonthStatistics(year, monthNumber)
                     });
                 })
+                
+            displayReturnToMonthStatisticsScreenLink(monthNumber, year);
             }
         else
             {
@@ -928,9 +941,43 @@ document.addEventListener('DOMContentLoaded', function() {
                             showMonthStatistics(year, monthNumber)
                         });
                     })
+
+                    const linebreak = document.createElement("br");
+                    screenContent.appendChild(linebreak);
+
+                    const returnLinkDiv = document.createElement("div");
+                    returnLinkDiv.classList.add("centered_paragraph");
+                    screenContent.appendChild(returnLinkDiv);
+
+                    const returnLink = document.createElement("a");
+                    returnLink.target = "#";
+                    returnLink.textContent = `Return to previous screen`;
+                    returnLinkDiv.appendChild(returnLink);
+                    
+                    const info = dateAndFamilyMemberInformation.split("_");
+            
+                    returnLink.addEventListener("click", (event) => showDailyLog(dateAndFamilyMemberInformation));
                     })
             }
         })  
+    }
+
+    function displayReturnToMonthStatisticsScreenLink(month, year) {
+        const content = document.getElementById("content");
+
+        const linebreak = document.createElement("br");
+        content.appendChild(linebreak);
+
+        const returnLinkDiv = document.createElement("div");
+        returnLinkDiv.classList.add("centered_paragraph");
+        content.appendChild(returnLinkDiv);
+
+        const returnLink = document.createElement("a");
+        returnLink.target = "#";
+        returnLink.textContent = `Return to previous screen`;
+        returnLinkDiv.appendChild(returnLink);
+
+        returnLink.addEventListener("click", (event) => showMonthStatistics(year, month));
     }
 
     function getYYYYMMDDDate(current0yesterday1) {
