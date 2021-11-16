@@ -151,7 +151,10 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById("navigationMenu").style.display = "none";
     })
 
-    document.getElementById("menuFamilyMembers").addEventListener("click", (event) => showFamilyMembers());
+    document.getElementById("menuFamilyMembers").addEventListener("click", (event) => {
+        document.getElementById("navigationMenu").style.display = "none";
+        showFamilyMembers()
+    });
 
     function showFamilyMembers() {
         fetch(`http://localhost:3000/familyMembers`) 
@@ -317,7 +320,10 @@ document.addEventListener('DOMContentLoaded', function() {
         buttonDiv.appendChild(button)
     }
 
-    document.getElementById("menuOverallScoreboard").addEventListener("click", (event) => showOverallScoreboard());
+    document.getElementById("menuOverallScoreboard").addEventListener("click", (event) => {
+        document.getElementById("navigationMenu").style.display = "none";
+        showOverallScoreboard()
+    });
 
     function showOverallScoreboard() {
         fetch(`http://localhost:3000/familyMembers`) 
