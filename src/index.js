@@ -532,6 +532,22 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         createTotalRow(monthylScoreTable, totalRowData);
+
+        const content = document.getElementById("content");
+
+        const linebreak = document.createElement("br");
+        content.appendChild(linebreak);
+
+        const returnLinkDiv = document.createElement("div");
+        returnLinkDiv.classList.add("centered_paragraph");
+        content.appendChild(returnLinkDiv);
+
+        const returnLink = document.createElement("a");
+        returnLink.target = "#";
+        returnLink.textContent = `Return to the overall scoreboard`;
+        returnLinkDiv.appendChild(returnLink);
+
+        returnLink.addEventListener("click", (event) => showOverallScoreboard());
     }
 
     function showMonthStatistics(year, month) {
@@ -646,6 +662,22 @@ document.addEventListener('DOMContentLoaded', function() {
         totalCells.push(totalScore[familyMembers[q].id]);
     }
     createTotalRow(monthScoreTable, totalCells);
+
+    const content = document.getElementById("content");
+
+    const linebreak = document.createElement("br");
+    content.appendChild(linebreak);
+
+    const returnLinkDiv = document.createElement("div");
+    returnLinkDiv.classList.add("centered_paragraph");
+    content.appendChild(returnLinkDiv);
+
+    const returnLink = document.createElement("a");
+    returnLink.target = "#";
+    returnLink.textContent = `Return to ${year} scoreboard`;
+    returnLinkDiv.appendChild(returnLink);
+
+    returnLink.addEventListener("click", (event) => showYearStatistics(year));
     
     for(let z = 0; z < 5; z++) {
         const spacer = document.createElement("br")
