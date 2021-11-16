@@ -12,13 +12,18 @@
     },
     {
       "id": 29,
-      "firstName": "Jeff",
-      "lastName": "Lenter"
+      "firstName": "Jason",
+      "lastName": "Lederer"
     },
     {
       "id": 31,
       "firstName": "Nick",
       "lastName": "Lenter"
+    },
+    {
+      "firstName": "Tommy",
+      "lastName": "Lantern",
+      "id": 32
     }
   ],
   "dailyLogs": [

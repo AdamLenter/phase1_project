@@ -151,7 +151,9 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById("navigationMenu").style.display = "none";
     })
 
-    document.getElementById("menuFamilyMembers").addEventListener("click", (event) => {
+    document.getElementById("menuFamilyMembers").addEventListener("click", (event) => showFamilyMembers());
+
+    function showFamilyMembers() {
         fetch(`http://localhost:3000/familyMembers`) 
         .then((result) => result.json()) 
         .then((familyMembers) => {
@@ -177,9 +179,145 @@ document.addEventListener('DOMContentLoaded', function() {
                 editLink.textContent = "edit";
                 editLink.id = familyMembers[i].id
                 editLinkCell.appendChild(editLink);
+
+                editLink.addEventListener("click", (event) => {
+                    showEditFamilYMemberForm(event.target.id);
+                })
             }
+
+            const content = document.getElementById("content");
+            
+            const linebreak = document.createElement("br");
+            content.appendChild(linebreak);
+
+            const addContactDiv = document.createElement("div");
+            addContactDiv.classList.add("centered_paragraph");
+            content.appendChild(addContactDiv);
+
+            const addContactLink = document.createElement("a");
+            addContactLink.textContent = "Add a new family member";
+            addContactDiv.appendChild(addContactLink);
+
+            addContactLink.addEventListener("click", (event) => displayEnterEditFamilyMemberForm())
         })
-    })
+    }
+
+    function showEditFamilYMemberForm(familyMemberID) {
+        fetch(`http://localhost:3000/familyMembers/${familyMemberID}`) 
+            .then((result) => result.json()) 
+            .then((familyMember) => { 
+                displayEnterEditFamilyMemberForm(familyMember);
+            })
+    }
+
+    function displayEnterEditFamilyMemberForm(familyMember) {
+        let screenHeading;
+        let defaultFirstName;
+        let defaultLastName
+        
+        if(typeof familyMember != "undefined") {
+            //There is a family member. In edit mode:
+            screenHeading = "Edit Family Member";
+            defaultFirstName = familyMember.firstName;
+            defaultLastName = familyMember.lastName;
+        }
+        else {
+            screenHeading = "Add New Family Member";
+            defaultFirstName = "";
+            defaultLastName = "";
+        }
+        
+        const screenContent = document.getElementById("content");
+
+        screenContent.innerHTML = "";
+        
+        const screenH1 = document.createElement("h1");
+        screenH1.textContent = screenHeading;
+        screenContent.appendChild(screenH1);
+
+        const form = document.createElement("form");
+        screenContent.appendChild(form);
+
+        const fieldset = document.createElement("fieldset");
+        form.appendChild(fieldset);
+
+        const firstNameLabel = document.createElement("label");
+        firstNameLabel.textContent = "First name: ";
+        fieldset.appendChild(firstNameLabel);
+
+        const firstNameInput = document.createElement("input");
+        firstNameInput.type = "textbox";
+        firstNameInput.value = defaultFirstName;
+        fieldset.appendChild(firstNameInput);
+
+        const lastNameLabel = document.createElement("label");
+        lastNameLabel.textContent = "Last name: ";
+        fieldset.appendChild(lastNameLabel);
+
+        const lastNameInput = document.createElement("input");
+        lastNameInput.type = "textbox";
+        lastNameInput.value = defaultLastName;
+        fieldset.appendChild(lastNameInput);
+
+        const buttonDiv = document.createElement("div");
+        buttonDiv.classList.add("buttons");
+        form.appendChild(buttonDiv);
+
+        const button = document.createElement("button");
+        button.textContent = "Submit";
+
+        if(typeof familyMember != "undefined") {
+            //In edit mode.
+            button.id = familyMember.id;
+            button.addEventListener("click", (event) => {
+                event.preventDefault();
+                const configurationObject = {
+                    method: "PATCH",
+        
+                    headers: {
+                        "Content-Type": "Application/json", 
+                        "Accept": "Application/json"
+                    },
+                    body: JSON.stringify({
+                        "firstName": firstNameInput.value, 
+                        "lastName": lastNameInput.value
+                    })
+                }
+            fetch(`http://localhost:3000/familyMembers/${event.target.id}`, configurationObject)
+                .then((response)=>response.json())
+                .then((familyMember) => {
+                    showFamilyMembers();
+            })
+        })
+        }
+        else {
+            button.addEventListener("click", (event) => {
+                event.preventDefault();
+                
+                const configurationObject = {
+                    method: "POST",
+        
+                    headers: {
+                        "Content-Type": "Application/json", 
+                        "Accept": "Application/json"
+                    },
+                    body: JSON.stringify({
+                        "firstName": firstNameInput.value, 
+                        "lastName": lastNameInput.value
+                    })
+                }
+            fetch(`http://localhost:3000/familyMembers`, configurationObject)
+                .then((response)=>response.json())
+                .then((familyMember) => {
+                    showFamilyMembers();
+                })
+            })
+        }
+
+        buttonDiv.appendChild(button)
+    }
+
+    document.getElementById("menuOverallScoreboard").addEventListener("click", (event) => showOverallScoreboard());
 
     function showOverallScoreboard() {
         fetch(`http://localhost:3000/familyMembers`) 
