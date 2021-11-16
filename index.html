@@ -10,14 +10,27 @@
 	<script src = './src/index.js'></script>
 	
 	<div id = "heading">
-		<h1>Family Fitness Tracker</h1>
+		<div id = "navigation_heading">
+			<img id = "menu_icon" src = "menu_icon.png" alt = "Click to reveal menu">
+		</div>
+
+		<div id = "heading_name">
+			<h1>Family Fitness Tracker</h1>
+		</div>
 
 		<div id = "logout">
-			<strong>MOM</strong>
+			<strong>[User Name]</strong>
 			<br />
-			(<a class = 'undecorated' href = '../../donorhub/controllers/login_controller.php?Action=logout' >logout</a>)
-		</div>  
-	</div>  
+			(<a class = 'undecorated' href = '#' >logout</a>)
+		</div>
+
+		<div id = "navigationMenu">	
+			<ul id="menu">
+				<li><a id = "menuFamilyMembers" href = "#" class = "undecorated">Show family members</a></li>
+				<li><a id = "menuAllTimePerformance" href = "#" class = "undecorated">Show all-time performance</a></li>
+			</ul>
+		</div>
+	</div>
 
 	<div id = "content">
     

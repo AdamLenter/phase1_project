@@ -14,7 +14,7 @@ hr {
 	left: 0px;
 	border: 1px solid black;
 	min-height: 10%;
-	background: #334F94;
+	background: #9DB1E3;
 	}
 
 #navigation_heading {
@@ -167,7 +167,6 @@ p {
 	
 h1 {
 text-align: center;
-color: #334F94;
 }
 
 h1.heading {
@@ -471,7 +470,7 @@ img {
 	height: 5%;
 	left: 0px;
 	z-index: 2;
-	background: #334F94;
+	background: #9DB1E3;
 	}
 
 @media screen and (min-width: 350px) {
@@ -486,6 +485,7 @@ img {
 
 	#navigationMenu {
 		width: 200px;
+		background-color: #9DB1E3;
 	}
 
 	.navigation_submenu {

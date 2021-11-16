@@ -136,6 +136,50 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
         
+    document.getElementById("menu_icon").addEventListener("click", (event) => {
+        if(document.getElementById("navigationMenu").style.display === "block") {
+            //The menu is currently displayed. Hide it:
+            document.getElementById("navigationMenu").style.display = "none"
+        }
+        else {
+            //The menu is not displayed. Show it:
+            document.getElementById("navigationMenu").style.display = "block";
+        }
+    })
+
+    document.getElementById("navigationMenu").addEventListener("mouseleave", (event) => {
+        document.getElementById("navigationMenu").style.display = "none";
+    })
+
+    document.getElementById("menuFamilyMembers").addEventListener("click", (event) => {
+        fetch(`http://localhost:3000/familyMembers`) 
+        .then((result) => result.json()) 
+        .then((familyMembers) => {
+            const familyMembersTable = createTableScreen("Family Members", ["First Name", "Last Name", ""]);
+
+            for(let i = 0; i < familyMembers.length; i++) {
+                const familyMemberRow = document.createElement("tr");
+                familyMembersTable.appendChild (familyMemberRow);
+
+                const firstName = document.createElement("td");
+                firstName.textContent = familyMembers[i].firstName;
+                familyMemberRow.appendChild(firstName);
+
+                const lastName = document.createElement("td");
+                lastName.textContent = familyMembers[i].lastName;
+                familyMemberRow.appendChild(lastName);
+
+                const editLinkCell = document.createElement("td");
+                familyMemberRow.appendChild(editLinkCell);
+
+                const editLink = document.createElement("a");
+                editLink.target = "#";
+                editLink.textContent = "edit";
+                editLink.id = familyMembers[i].id
+                editLinkCell.appendChild(editLink);
+            }
+        })
+    })
 
     function showOverallScoreboard() {
         fetch(`http://localhost:3000/familyMembers`) 

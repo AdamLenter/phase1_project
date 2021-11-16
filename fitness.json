@@ -3,30 +3,22 @@
     {
       "id": 11,
       "firstName": "Adam",
-      "lastName": "Lenter",
-      "gender": "Male",
-      "dob": "1975-10-12"
+      "lastName": "Lenter"
     },
     {
       "id": 17,
       "firstName": "Jamie",
-      "lastName": "Lenter",
-      "gender": "Female",
-      "dob": "1980-08-10"
+      "lastName": "Lenter"
     },
     {
       "id": 29,
       "firstName": "Jeff",
-      "lastName": "Lenter",
-      "gender": "Other",
-      "dob": "2010-03-05"
+      "lastName": "Lenter"
     },
     {
       "id": 31,
       "firstName": "Nick",
-      "lastName": "Lenter",
-      "gender": "Male",
-      "dob": "2012-12-18"
+      "lastName": "Lenter"
     }
   ],
   "dailyLogs": [
