@@ -1,4 +1,5 @@
 let familyMembers = [];
+let familyMemberIDs = [];
 let dailyLogs = [];
 
 function calculateDailyScore(dailyLog) {
@@ -22,7 +23,14 @@ function calculateDailyScore(dailyLog) {
 fetch(`http://localhost:3000/familyMembers`) 
     .then((result) => result.json()) 
     .then((allFamilyMembers) => {
-        familyMembers = allFamilyMembers;
+        for(let i = 0; i < allFamilyMembers.length; i++) {
+            familyMembers[allFamilyMembers[i].id] = {
+                firstName: allFamilyMembers[i].firstName, 
+                lastName: allFamilyMembers[i].lastName
+            }
+        
+        familyMemberIDs.push(allFamilyMembers[i].id);
+        }
     })
 
 fetch(`http://localhost:3000/dailyLogs`) 
@@ -101,10 +109,10 @@ function showFamilyMembers() {
     const lastNameHeading = createTableHeadingCell(headingRow, "Last Name");
     const editRowHeading = createTableHeadingCell(headingRow, "");
 
-    for(let i = 0; i < familyMembers.length; i++) {
+    for(let i = 0; i < familyMemberIDs.length; i++) {
         const familyMemberRow = createTableRow(table);
-        const firstNameCell = createTableDataCell(familyMemberRow, familyMembers[i].firstName);
-        const lastNameCell = createTableDataCell(familyMemberRow, familyMembers[i].lastName);
+        const firstNameCell = createTableDataCell(familyMemberRow, familyMembers[familyMemberIDs[i]].firstName);
+        const lastNameCell = createTableDataCell(familyMemberRow, familyMembers[familyMemberIDs[i]].lastName);
         
         const editCell = document.createElement("td");
         familyMemberRow.appendChild(editCell);
@@ -112,7 +120,7 @@ function showFamilyMembers() {
         const editLink = document.createElement("a");
         editLink.target = "#";
         editLink.textContent = "Edit";
-        editLink.id = familyMembers[i].id;
+        editLink.id = familyMembers[familyMemberIDs[i]].id;
         editCell.appendChild(editLink);
 
         editLink.addEventListener("click", (event) => {
