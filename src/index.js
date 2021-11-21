@@ -100,6 +100,58 @@ function createTableDataCell(tableRow, cellText) {
     return dataCell;
 }
 
+function createForm(div) {
+    const form = document.createElement("form");
+    div.appendChild(form);
+
+    return form;
+}
+
+function createFieldset(form) {
+    const fieldset = document.createElement("fieldset");
+    form.appendChild(fieldset);
+
+    return fieldset;
+}
+
+function createTextBoxWithLabel(fieldset, labelText, defaultValue) {
+    const label = document.createElement("label");
+    label.textContent = labelText;
+    fieldset.appendChild(label);
+
+    const textbox = document.createElement("input");
+    textbox.type = "textbox";
+    textbox.value = defaultValue;
+    fieldset.appendChild(textbox);
+
+    return textbox;
+}
+
+function createButtonDivWithButton(form, submitButtonText) {
+    const buttonDiv = document.createElement("div");
+    buttonDiv.classList.add("buttons");
+    form.appendChild(buttonDiv);
+
+    const button = document.createElement("button");
+    button.textContent = submitButtonText;
+    buttonDiv.appendChild(button);
+
+    return button;
+}
+
+function createCenteredLink(elementToAppend, linkText) {
+    const linkDiv = document.createElement("div");
+    linkDiv.classList.add("centered_paragraph");
+    elementToAppend.appendChild(linkDiv);
+
+    const link = document.createElement("a");
+    link.target = "#";
+    link.textContent = linkText;
+    linkDiv.appendChild(link);
+
+    return link;
+}
+
 function showFamilyMembers() {
     const screenDiv = createScreen("Show Family Members");
     const table = createTable(screenDiv, "Family Members");
@@ -120,11 +172,113 @@ function showFamilyMembers() {
         const editLink = document.createElement("a");
         editLink.target = "#";
         editLink.textContent = "Edit";
-        editLink.id = familyMembers[familyMemberIDs[i]].id;
+        editLink.id = familyMemberIDs[i];
         editCell.appendChild(editLink);
 
         editLink.addEventListener("click", (event) => {
-            displayEditFamilyMemberForm(event.target.id);
+            displayEnterEditFamilyMemberForm(event.target.id);
+        })
+    }
+
+    let link = createCenteredLink(screenDiv, "Create new family member");
+    link.addEventListener("click", (event) => {
+        displayEnterEditFamilyMemberForm()
+    })
+}
+
+function displayEnterEditFamilyMemberForm(familyMemberID) {
+    let screenHeading;
+    let defaultFirstName;
+    let defaultLastName
+    
+    if(familyMemberID != undefined) {
+        //There is a family member. In edit mode:
+        screenHeading = "Edit Family Member";
+        defaultFirstName = familyMembers[familyMemberID].firstName;
+        defaultLastName = familyMembers[familyMemberID].lastName;
+    }
+    else {
+        screenHeading = "Add New Family Member";
+        defaultFirstName = "";
+        defaultLastName = "";
+    }
+    
+    const enterEditFamilyScreen = createScreen(screenHeading);
+    const form = createForm(enterEditFamilyScreen);
+    form.id = familyMemberID;
+    const fieldset = createFieldset(form);
+
+    const firstNameTextbox = createTextBoxWithLabel(fieldset, "First name: ", defaultFirstName);
+    const lastNameTextbox = createTextBoxWithLabel(fieldset, "Last name: ", defaultLastName);
+
+    let button = createButtonDivWithButton(form, "Submit");
+
+    if(familyMemberID != undefined) {
+        //The family member id is not undefined. we are in edit mode:
+        button.id = familyMemberID;
+        
+        button.addEventListener("click", (event) => {
+            event.preventDefault();
+
+            const familyMemberID = event.target.id;
+            
+            const configurationObject = {
+                method: "PATCH",
+    
+                headers: {
+                    "Content-Type": "Application/json", 
+                    "Accept": "Application/json"
+                },
+                body: JSON.stringify({
+                    "firstName": firstNameTextbox.value, 
+                    "lastName": lastNameTextbox.value
+                })
+            }
+        fetch(`http://localhost:3000/familyMembers/${familyMemberID}`, configurationObject)
+            .then((response)=>response.json())
+            .then((familyMember) => {
+                //Update the array to reflect the new name:
+                familyMembers[familyMemberID].firstName = firstNameTextbox.value;
+                familyMembers[familyMemberID].lastName = lastNameTextbox.value;
+
+                //Return to the family member form:
+                showFamilyMembers();
+        })
+    })
+    }
+    else {
+        //In enter new contact mode:
+        button.addEventListener("click", (event) => {
+            event.preventDefault();
+            
+            const configurationObject = {
+                method: "POST",
+    
+                headers: {
+                    "Content-Type": "Application/json", 
+                    "Accept": "Application/json"
+                },
+                body: JSON.stringify({
+                    "firstName": firstNameTextbox.value, 
+                    "lastName": lastNameTextbox.value
+                })
+            }
+        fetch(`http://localhost:3000/familyMembers`, configurationObject)
+            .then((response)=>response.json())
+            .then((familyMember) => {
+                //Add the new family member to the array of family members:
+                const familyMemberID = familyMember.id;
+                familyMembers[familyMemberID] = {
+                    firstName: familyMember.firstName, 
+                    lastName: familyMember.lastName, 
+                }
+
+                //Add the id to the list of family member ids:
+                familyMemberIDs.push(familyMemberID);
+
+                //Return to the family member form:
+                showFamilyMembers();
+            })
         })
     }
 }
