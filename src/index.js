@@ -7,6 +7,20 @@ let totalFamilyMemberMonthlyScore = [];
 let startYear = 100000;
 let endYear = 0;
 
+
+function getYYYYMMDDDate(current0yesterday1) {
+    const currentDate = new Date();
+    const dateOffset = currentDate.getTimezoneOffset();
+    const testDate = currentDate.setDate(currentDate.getDate() - current0yesterday1)
+    
+
+    const returnDate = new Date(currentDate.getTime() + (dateOffset*60*1000)); 
+    return(currentDate.toISOString().split('T')[0]);
+}
+
+const currentDate = getYYYYMMDDDate(0);
+const yesterdayDate = getYYYYMMDDDate(1);
+
 function getMonths(year) {
     let numberOfDaysInFebruary = 28;
 
@@ -483,7 +497,7 @@ function showYearScoreboard(year) {
 
         //Display the month in a cell:
         const monthCell = createTableDataCell(monthRow, months[i].monthName, 1);
-        monthCell.id = monthNumber;
+        monthCell.id = `${year}.${monthNumber}`;
 
         monthCell.addEventListener("click", (event) => {
             showDailyScoreboard(event.target.id);
@@ -515,6 +529,91 @@ function showYearScoreboard(year) {
             const cell = createTableDataCell(totalRow, "-", 1);
         }
     }
+}
+
+function showDailyScoreboard(yearAndMonth) {
+    const year = parseInt(yearAndMonth.substring(0, yearAndMonth.indexOf(".")), 10);
+    const monthNumber = parseInt(yearAndMonth.substring(yearAndMonth.indexOf(".") + 1), 10);
+
+    const months = getMonths(year);
+    const monthName = months[monthNumber - 1].monthName;
+
+    const screenDiv = createScreen(`Month Scoreboard - ${monthName} ${year}`);
+    const table = createTable(screenDiv, "Scoreboard");
+    const headingRow = createTableRow(table);
+
+    const dayHeading = createTableHeadingCell(headingRow, "Day");
+    createNameHeadings(headingRow);
+
+    //Now create rows by month:
+    for(let dateNumber = 0; dateNumber  <= months[monthNumber - 1].numberOfDays; dateNumber++) {
+        const dayRow = createTableRow(table);
+
+        //Display the day in a cell:
+        const dayCell = createTableDataCell(dayRow, dateNumber, 1);
+
+        for(let i = 0; i < familyMemberIDs.length; i++) {
+            if(dailyLogs[familyMemberIDs[i]] && dailyLogs[familyMemberIDs[i]][year] && dailyLogs[familyMemberIDs[i]][year][monthNumber] && dailyLogs[familyMemberIDs[i]][year][monthNumber][dateNumber]) {
+                //There is a value for the family member and year and month:
+                const cell = createTableDataCell(dayRow);
+                const link = document.createElement("a");
+
+                link.targer = "#";
+                link.id = `${familyMemberIDs[i]}.${year}.${monthNumber}.${dateNumber}`;
+                link.textContent = dailyLogs[familyMemberIDs[i]][year][monthNumber][dateNumber].score;
+                cell.appendChild(link);
+                link.addEventListener("click", (event) => console.log(event.target));
+            }
+            else {
+                //There is no value:
+                if(dateNumber < 10) {
+                    testDate = `${year}-${monthNumber}-0${dateNumber}`;
+                }
+                else {
+                    testDate = `${year}-${monthNumber}-${dateNumber}`;
+                }
+                
+                if(testDate < yesterdayDate) {
+                    //The date is prior to yesterday. Therefore, it cannot be set:
+                    const cell = createTableDataCell(dayRow, "(not set)")
+                }
+                else if(testDate > currentDate) {
+                    //The date is after the present date. Therefore, nothing should be displayed:
+                    const cell = createTableDataCell(dayRow, "-");
+                }
+                else {
+                    //The date is either yesterday or today. Therefore, it can be set:
+                    const cell = createTableDataCell(dayRow);
+                    const link = document.createElement("a");
+                    link.target = "#";
+                    link.id = `${familyMemberIDs[i]}.${year}.${monthNumber}.${dateNumber}`;
+                    link.textContent = "click to set";
+                    cell.appendChild(link);
+
+                    link.addEventListener("click", (event) => {
+                        console.log(event);
+                    })
+                }                
+            }
+        }
+    }
+
+    const totalRow = createTableRow(table)
+
+    const totalCell = createTableDataCell(totalRow, "TOTAL: ", 1);
+
+    for(let i = 0; i < familyMemberIDs.length; i++) {
+        if(totalFamilyMemberMonthlyScore[familyMemberIDs[i]] && totalFamilyMemberMonthlyScore[familyMemberIDs[i]][year] && totalFamilyMemberMonthlyScore[familyMemberIDs[i]][year][monthNumber]) {
+            //There is a value for the family member and year:
+            const cell = createTableDataCell(totalRow, totalFamilyMemberMonthlyScore[familyMemberIDs[i]][year][monthNumber], 1);
+        }
+        else {
+            //There is no value:
+            const cell = createTableDataCell(totalRow, "-", 1);
+        }
+    }
+
+    createLineBreaks(screenDiv, 5);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
