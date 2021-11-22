@@ -104,6 +104,38 @@ function getMonths(year) {
 return months;
 }
 
+function displayYes1No0(value) {
+    switch(value) {
+        case 1: 
+            return "Yes";
+            break;
+
+        case 0: 
+            return "No";
+            break;
+
+        default: 
+            return undefined;
+            break;
+    }
+}
+
+function getInfoFromFamilyMemberAndDate(familyMemberAndDate) {
+    let returnData = [];
+    returnData["familyMemberID"] = familyMemberAndDate.substring(0, familyMemberAndDate.indexOf("."));
+    
+    const date = familyMemberAndDate.substring(familyMemberAndDate.indexOf(".") + 1);
+    
+    returnData["year"] = date.substring(0, date.indexOf("."));
+    
+    const monthAndDateNumber = date.substring(date.indexOf(".") + 1);
+    
+    returnData["month"] = monthAndDateNumber.substring(0, monthAndDateNumber.indexOf("."));
+    returnData["dateNumber"] = monthAndDateNumber.substring(monthAndDateNumber.indexOf(".") + 1);
+
+    return returnData;
+}
+
 function calculateDailyScore(dailyLog) {
     const dailyPoints = dailyLog.foodBalance + dailyLog.foodQuantity + dailyLog.exercise;
         
@@ -187,14 +219,21 @@ fetch(`http://localhost:3000/dailyLogs`)
         }
     })
 
-function createScreen(screenHeading) {
+function createScreen(screenHeading, subHeading) {
     document.getElementById("welcomeScreen").style.display = "none";
 
     const div = document.getElementById("fitnessInfo");
     div.innerHTML = "";
 
     const heading = document.createElement("h1");
+    heading.textContent = screenHeading;
     div.appendChild(heading);
+
+    if(subHeading) {
+        const h2 = document.createElement("h2");
+        h2.textContent = subHeading;
+        div.appendChild(h2);
+    }
     return div;
 }
 
@@ -562,7 +601,7 @@ function showDailyScoreboard(yearAndMonth) {
                 link.id = `${familyMemberIDs[i]}.${year}.${monthNumber}.${dateNumber}`;
                 link.textContent = dailyLogs[familyMemberIDs[i]][year][monthNumber][dateNumber].score;
                 cell.appendChild(link);
-                link.addEventListener("click", (event) => console.log(event.target));
+                link.addEventListener("click", (event) => showLog(event.target.id));
             }
             else {
                 //There is no value:
@@ -614,6 +653,48 @@ function showDailyScoreboard(yearAndMonth) {
     }
 
     createLineBreaks(screenDiv, 5);
+}
+
+function showLog(familyMemberAndDate) {
+    const info = getInfoFromFamilyMemberAndDate(familyMemberAndDate);
+    const months = getMonths(info["year"]);
+    
+    const monthName = months[info["month"] - 1].monthName;
+
+    const dailyLog = dailyLogs[info["familyMemberID"]][info["year"]][info["month"]][info["dateNumber"]];
+    
+    const logScreen = createScreen("Daily Log", `${familyMembers[info["familyMemberID"]].firstName} ${familyMembers[info["familyMemberID"]].lastName} - ${monthName} ${info["dateNumber"]}, ${info["year"]} `);
+
+    const paragraph = document.createElement("p");
+    logScreen.appendChild(paragraph);
+
+    paragraph.innerHTML = `I ate a healthy balance of food: <strong>${displayYes1No0(dailyLog.foodBalance)}</strong>
+        <br />
+        I ate an appropriate number of calories: <strong>${displayYes1No0(dailyLog.foodQuantity)}</strong>
+        <br /> 
+        I exercised vigorously for at least 30 minutes: <strong>${displayYes1No0(dailyLog.exercise)}</strong>
+        <br />`;
+    
+    logScreen.appendChild(paragraph);
+
+    const yesterdayDate = getYYYYMMDDDate(1);
+    let testDate;
+
+    if(info["dateNumber"] < 10) {
+        testDate = `${info["year"]}-${info["month"]}-0${info["dateNumber"]}`;
+    }
+    else {
+        testDate = `${info["year"]}-${info["month"]}-${info["dateNumber"]}`;
+    }
+    
+    if(testDate >= yesterdayDate) {
+        {
+            console.log(testDate);
+            console.log(yesterdayDate);
+        //This is not before yesterday. It can be edited:
+        let link = createCenteredLink(logScreen, "Click here to edit");
+        }
+    }
 }
 
 document.addEventListener('DOMContentLoaded', function() {
