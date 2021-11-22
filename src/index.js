@@ -695,6 +695,11 @@ function showLog(familyMemberAndDate) {
         let link = createCenteredLink(logScreen, "Click here to edit");
         }
     }
+
+    createLineBreaks(logScreen, 1);
+    let previousScreenLink = createCenteredLink(logScreen, "Return to previous screen");
+    previousScreenLink.id = `${info["year"]}.${info["month"]}`;
+    previousScreenLink.addEventListener("click", (event) => showDailyScoreboard(event.target.id));
 }
 
 document.addEventListener('DOMContentLoaded', function() {
