@@ -7,6 +7,89 @@ let totalFamilyMemberMonthlyScore = [];
 let startYear = 100000;
 let endYear = 0;
 
+function getMonths(year) {
+    let numberOfDaysInFebruary = 28;
+
+    if(year%4 === 0) {
+        //The year is divisible by 4. This is a leap year unless it is divisible by 100:
+        if(year%100 === 0) {
+            //The year is divisible by 100. It is not a leap year unless it is divisble by 400:
+            if(year%400 === 0) {
+                //The year is divsible by 400. It is a leap year:
+                numberOfDaysInFebruary = 29;
+            }
+        }
+    else {
+        //The year is not divisible by 100. It is a leap year:
+        numberOfDaysInFebruary = 29;
+        }
+    }
+
+    const months = [
+        {
+        monthNumber: 1, 
+        monthName: "January", 
+        numberOfDays: 31
+        },
+        {
+        monthNumber: 2, 
+        monthName: "February", 
+        numberOfDays: numberOfDaysInFebruary
+        },
+        {
+        monthNumber: 3, 
+        monthName: "March", 
+        numberOfDays: 31
+        },
+        {
+        monthNumber: 4, 
+        monthName: "April", 
+        numberOfDays: 30
+        },
+        {
+        monthNumber: 5, 
+        monthName: "May", 
+        numberOfDays: 31
+        },
+        {
+        monthNumber: 6, 
+        monthName: "June", 
+        numberOfDays: 30
+        },
+        {
+        monthNumber: 7, 
+        monthName: "July", 
+        numberOfDays: 31
+        },
+        {
+        monthNumber: 8, 
+        monthName: "August", 
+        numberOfDays: 31
+        },
+        {
+        monthNumber: 9, 
+        monthName: "September", 
+        numberOfDays: 30
+        },
+        {
+        monthNumber: 10, 
+        monthName: "October", 
+        numberOfDays: 31
+        },
+        {
+        monthNumber: 11, 
+        monthName: "November", 
+        numberOfDays: 30
+        },
+        {
+        monthNumber: 12, 
+        monthName: "December", 
+        numberOfDays: 30
+        },
+    ]
+return months;
+}
+
 function calculateDailyScore(dailyLog) {
     const dailyPoints = dailyLog.foodBalance + dailyLog.foodQuantity + dailyLog.exercise;
         
@@ -60,6 +143,7 @@ fetch(`http://localhost:3000/dailyLogs`)
 
                 //Create an annual total for the year:
                 totalFamilyMemberAnnualScore[allLogs[i].familyMemberID][allLogs[i].year] = 0;
+                totalFamilyMemberMonthlyScore[allLogs[i].familyMemberID][allLogs[i].year] = [];
 
                 //Update the starting and ending years:
                 startYear = Math.min(startYear, allLogs[i].year)
@@ -67,7 +151,11 @@ fetch(`http://localhost:3000/dailyLogs`)
             }
             
             if(dailyLogs[allLogs[i].familyMemberID][allLogs[i].year][allLogs[i].month] === undefined) {
+                //The contact doesn't have an array of logs for the current month. Create one: 
                 dailyLogs[allLogs[i].familyMemberID][allLogs[i].year][allLogs[i].month] = [];
+
+                //Also create a monthly total for the month:
+                totalFamilyMemberMonthlyScore[allLogs[i].familyMemberID][allLogs[i].year][allLogs[i].month] = 0;
             }
 
             //Now add the log to the appropriate array:
@@ -81,6 +169,7 @@ fetch(`http://localhost:3000/dailyLogs`)
             //Add the score to all of the appropriate totals:
             totalFamilyMemberScore[allLogs[i].familyMemberID] += score;
             totalFamilyMemberAnnualScore[allLogs[i].familyMemberID][allLogs[i].year] += score;
+            totalFamilyMemberMonthlyScore[allLogs[i].familyMemberID][allLogs[i].year][allLogs[i].month] += score;
         }
     })
 
@@ -342,7 +431,12 @@ function showOverallScoreboard() {
         const yearRow = createTableRow(table);
 
         //Display the year in a cell:
-        const yearCell = createTableDataCell(yearRow, year);
+        const yearCell = createTableDataCell(yearRow, year, 1);
+        yearCell.id = year;
+
+        yearCell.addEventListener("click", (event) => {
+            showYearScoreboard(event.target.id);
+        }) 
 
         for(let i = 0; i < familyMemberIDs.length; i++) {
             if(totalFamilyMemberAnnualScore[familyMemberIDs[i]] && totalFamilyMemberAnnualScore[familyMemberIDs[i]][year]) {
@@ -364,6 +458,57 @@ function showOverallScoreboard() {
         if(totalFamilyMemberScore[familyMemberIDs[i]]) {
             //There is a value for the family member and year:
             const cell = createTableDataCell(totalRow, totalFamilyMemberScore[familyMemberIDs[i]], 1);
+        }
+        else {
+            //There is no value:
+            const cell = createTableDataCell(totalRow, "-", 1);
+        }
+    }
+}
+
+function showYearScoreboard(year) {
+    const months = getMonths(year);
+
+    const screenDiv = createScreen("Year Scoreboard - " + year);
+    const table = createTable(screenDiv, "Scoreboard");
+    const headingRow = createTableRow(table);
+
+    const monthHeading = createTableHeadingCell(headingRow, "Month");
+    createNameHeadings(headingRow);
+
+    //Now create rows by month:
+    for(let i = 0; i  <= 11; i++) {
+        const monthNumber = i+1;
+        const monthRow = createTableRow(table);
+
+        //Display the month in a cell:
+        const monthCell = createTableDataCell(monthRow, months[i].monthName, 1);
+        monthCell.id = monthNumber;
+
+        monthCell.addEventListener("click", (event) => {
+            showDailyScoreboard(event.target.id);
+        }) 
+
+        for(let i = 0; i < familyMemberIDs.length; i++) {
+            if(totalFamilyMemberMonthlyScore[familyMemberIDs[i]] && totalFamilyMemberMonthlyScore[familyMemberIDs[i]][year]  && totalFamilyMemberMonthlyScore[familyMemberIDs[i]][year][monthNumber]) {
+                //There is a value for the family member and year and month:
+                const cell = createTableDataCell(monthRow, totalFamilyMemberMonthlyScore[familyMemberIDs[i]][year][monthNumber]);
+            }
+            else {
+                //There is no value:
+                const cell = createTableDataCell(monthRow, "-");
+            }
+        }
+    }
+
+    const totalRow = createTableRow(table)
+
+    const totalCell = createTableDataCell(totalRow, "TOTAL: ", 1);
+
+    for(let i = 0; i < familyMemberIDs.length; i++) {
+        if(totalFamilyMemberAnnualScore[familyMemberIDs[i]] && totalFamilyMemberAnnualScore[familyMemberIDs[i]][year]) {
+            //There is a value for the family member and year:
+            const cell = createTableDataCell(totalRow, totalFamilyMemberAnnualScore[familyMemberIDs[i]][year], 1);
         }
         else {
             //There is no value:
