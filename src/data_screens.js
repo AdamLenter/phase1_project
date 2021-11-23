@@ -7,7 +7,6 @@ let totalFamilyMemberMonthlyScore = [];
 let startYear = 100000;
 let endYear = 0;
 
-console.log(hello);
 function getYYYYMMDDDate(current0yesterday1) {
     const currentDate = new Date();
     const dateOffset = currentDate.getTimezoneOffset();
@@ -104,25 +103,9 @@ function getMonths(year) {
 return months;
 }
 
-function displayYes1No0(value) {
-    switch(value) {
-        case 1: 
-            return "Yes";
-            break;
-
-        case 0: 
-            return "No";
-            break;
-
-        default: 
-            return undefined;
-            break;
-    }
-}
-
 function displayReturnToMonthStatisticsScreenLink(elementToAppendTo, month, year) {
-    const returnLinkDiv = createCenteredLink(elementToAppendTo, "Return to previous screen");
-    returnLinkDiv.appendChild(returnLink);
+    const returnLinkDIv = createCenteredLink(elementToAppendTo, "Return to previous screen");
+    returnLinkDIv.appendChild(returnLink);
     returnLink.addEventListener("click", (event) => showMonthStatistics(year, month));
 }
 
@@ -189,24 +172,6 @@ function getInfoFromFamilyMemberAndDate(familyMemberAndDate) {
     returnData["dateNumber"] = monthAndDateNumber.substring(monthAndDateNumber.indexOf(".") + 1);
 
     return returnData;
-}
-
-function calculateDailyScore(dailyLog) {
-    const dailyPoints = dailyLog.foodBalance + dailyLog.foodQuantity + dailyLog.exercise;
-        
-    switch(dailyPoints) {
-        case 3:
-            return 5;
-            break;
-
-        case 2:
-            return 3;
-            break;
-
-        default: 
-            return 0;
-            break;
-    }
 }
 
 fetch(`http://localhost:3000/familyMembers`) 
@@ -438,12 +403,6 @@ function showOverallScoreboard() {
                 const cell = createTableDataCell(yearRow, "-");
             }
         }
-    }
-
-    function totalAnnualScore(familyMember) {
-        familyMember.logs.reduce((accumulator, log) => {
-            return accumulator + calculateDailyScore(log);
-        }, 0)
     }
 
     const totalRow = createTableRow(table)

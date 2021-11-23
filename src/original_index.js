@@ -27,7 +27,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-
     function getMonths(year) {
         let numberOfDaysInFebruary = 28;
 
@@ -43,8 +42,8 @@ document.addEventListener('DOMContentLoaded', function() {
         else {
             //The year is not divisible by 100. It is a leap year:
             numberOfDaysInFebruary = 29;
+            }
         }
-    }
 
         const months = [
             {
