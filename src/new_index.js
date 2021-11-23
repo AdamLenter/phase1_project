@@ -57,7 +57,7 @@ function showOverallScoreboard() {
     }
 
     //Create a screen for the table:
-    const tableScreen = generateTableScreen("Overall Scoreboard", "World", "Scoreboard");
+    const tableScreen = generateTableScreen("Overall Scoreboard", "", "Scoreboard");
 
     //Create a header row with "Year" in the first column with a link to data for the year:
     const headerRow = createTableRow(tableScreen[2]);
