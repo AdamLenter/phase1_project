@@ -72,7 +72,7 @@ function showOverallScoreboard() {
         //Add a cell for the year:
         const yearCell = createTableDataCell(dataRow, year, 1);
         yearCell.id = year;
-        yearCell.addEventListener("click", (event) => displayAnnualPerformance);
+        yearCell.addEventListener("click", (event) => displayAnnualPerformance(event.target.id));
 
         //Now add cells for the individuals' total scores:
         for(familyMember of familyMembers) {
@@ -96,5 +96,62 @@ function showOverallScoreboard() {
     //Provide a total cell for each family member:
     for(familyMember of familyMembers) {
         createTableDataCell(totalRow, createTotalScoreFromGroupOfLogs(familyMember.logs), 1);
+    }
+}
+
+//Screen to see single year performance
+function displayAnnualPerformance(year) {
+    //Get the months for the year:
+    const months = getMonths(year);
+
+    //Create a screen for the table:
+    const tableScreen = generateTableScreen(`Single Year Scoreboard - ${year}`, "", "Scoreboard");
+
+    //Create a header row with "Month" in the first column with a link to data for the year:
+    const headerRow = createTableRow(tableScreen[2]);
+    const yearHeaderCell = createTableHeadingCell(headerRow, "Month");
+    
+    //We are going to cycle through the family members, making a header row with their names and creating a total score:
+    let totalScore = [];
+    
+    for(familyMember of familyMembers) {
+        createTableHeadingCell(headerRow, `${familyMember.firstName} ${familyMember.lastName}`);
+        totalScore[familyMember.id] = 0;
+    }
+
+    //Now Cycle through the months and show the contact's totals for the month:
+    for(let i = 0; i < 12; i++) {
+        const dataRow = createTableRow(tableScreen[2]);
+
+        //Add a cell for the month:
+        const monthCell = createTableDataCell(dataRow, months[i].monthName, 1);
+        monthCell.id = i + 1;
+        monthCell.addEventListener("click", (event) => displayDailyPerformance(event.target.id));
+
+        //Now add cells for the individuals' total scores:
+        for(familyMember of familyMembers) {
+            const familyMemberMonthLogs = familyMember.logs.filter((log) => log.year == year && log.month === (i + 1));
+            
+            if(familyMemberMonthLogs != undefined) {
+                //There is at least one element in the row. Find the total:
+                monthScore = createTotalScoreFromGroupOfLogs(familyMemberMonthLogs);
+                createTableDataCell(dataRow, monthScore);
+
+                //Add the month score to the individual's total:
+                totalScore[familyMember.id] += monthScore;
+            }
+            else {
+                //The family member does not have any logs:
+                createTableDataCell(dataRow, 0);
+            }
+        }
+    }
+    //Now create a total row:
+    const totalRow = createTableRow(tableScreen[2]);
+    const totalCell = createTableDataCell(totalRow, "TOTAL: ", 1);
+
+    //Provide a total cell for each family member:
+    for(familyMember of familyMembers) {
+        createTableDataCell(totalRow, totalScore[familyMember.id], 1);
     }
 }
