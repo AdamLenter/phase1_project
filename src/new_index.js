@@ -125,7 +125,7 @@ function displayAnnualPerformance(year) {
 
         //Add a cell for the month:
         const monthCell = createTableDataCell(dataRow, months[i].monthName, 1);
-        monthCell.id = i + 1;
+        monthCell.id = `${i + 1}.${year}`;
         monthCell.addEventListener("click", (event) => displayDailyPerformance(event.target.id));
 
         //Now add cells for the individuals' total scores:
@@ -154,4 +154,113 @@ function displayAnnualPerformance(year) {
     for(familyMember of familyMembers) {
         createTableDataCell(totalRow, totalScore[familyMember.id], 1);
     }
+}
+
+//Screen to see single month performance
+function displayDailyPerformance(monthAndYear) {
+    //Get the month and year:
+    const month = parseInt(monthAndYear.substring(0, monthAndYear.indexOf(".")), 10);
+    const year = monthAndYear.substring(monthAndYear.indexOf(".") + 1);
+
+    //Get the months for the year:
+    const months = getMonths(year);
+
+    //We need to get the previous date and current date:
+    const currentDate = getYYYYMMDDDate(0);
+    const yesterdayDate = getYYYYMMDDDate(1);
+
+    //Create a screen for the table:
+    const tableScreen = generateTableScreen(`Single Month Scoreboard - ${months[month - 1].monthName} ${year}`, "", "Scoreboard");
+
+    //Create a header row with "Date" in the first column with a link to data for the year:
+    const headerRow = createTableRow(tableScreen[2]);
+    const yearHeaderCell = createTableHeadingCell(headerRow, "Date");
+    
+    //We are going to cycle through the family members, making a header row with their names and creating a total score:
+    let totalScore = [];
+    
+    for(familyMember of familyMembers) {
+        createTableHeadingCell(headerRow, `${familyMember.firstName} ${familyMember.lastName}`);
+        totalScore[familyMember.id] = 0;
+    }
+
+    //Now Cycle through the months and show the contact's totals for the month:
+    let dailyScore;
+    let testDate;
+
+    let testMonth;
+    if(month < 10) {
+        //The month is single digit. Make add a 0 for the test:
+        testMonth = `0${month}`;
+    }
+    else {
+        //The month is double digit:
+        testMonth = `${month}`;
+    }
+
+    for(let i = 0; i < months[month - 1].numberOfDays; i++) {
+        const dataRow = createTableRow(tableScreen[2]);
+
+        //Add a cell for the month:
+        const dateCell = createTableDataCell(dataRow, i + 1, 1);
+        
+        //Now add cells for the individuals' total scores:
+        for(familyMember of familyMembers) {
+            const familyMemberDateLog = (familyMember.logs.find((log) => log.year == year && log.month === month && log.dateNumber === (i + 1)));
+            
+            if(familyMemberDateLog != undefined) {
+                //There is a score. Display it:
+                dailyScore = calculateDailyScore(familyMemberDateLog)
+                const dailyScoreCell = createTableDataCell(dataRow, "");
+                const dailyScoreLink = document.createElement("a");
+                dailyScoreLink.id = `${familyMember.id}.${year}.${month}.${(i+1)}`;
+                dailyScoreLink.target = "#";
+                dailyScoreLink.textContent = dailyScore;
+                dailyScoreCell.appendChild(dailyScoreLink);
+                
+                dailyScoreLink.addEventListener("click", (event) => displaySingleDayPerformance(event.target.id));
+                //Add the date score to the individual's total:
+                totalScore[familyMember.id] += dailyScore;
+            }
+            else {
+                //The family member does not have a date score:
+                if(i < 9) {
+                    testDate = `${year}-${testMonth}-0${i + 1}`;
+                }
+                else {
+                    testDate = `${year}-${testMonth}-${i + 1}`;
+                }
+                if(testDate < yesterdayDate) {
+                    //There is no score, but it can't be set anymore:
+                    createTableDataCell(dataRow, "(not set)");
+                }
+                else if(testDate > currentDate) {
+                    //This is a future date:
+                    createTableDataCell(dataRow, "-");
+                }
+                else {
+                    //The score is not set but it can be:
+                    const setScoreCell = createTableDataCell(dataRow, "");
+                    const setScoreLink = document.createElement("a");
+                    setScoreLink.id = `${familyMember.id}.${year}.${month}.${(i+1)}`;
+                    setScoreLink.target = "#";
+                    setScoreLink.textContent = "click to set";
+                    setScoreCell.appendChild(setScoreLink);
+                    
+                    setScoreLink.addEventListener("click", (event) => displayEnterEditDailyLogForm(event.target.id));
+                }
+            }
+        }
+    }
+   
+    //Now create a total row:
+    const totalRow = createTableRow(tableScreen[2]);
+    const totalCell = createTableDataCell(totalRow, "TOTAL: ", 1);
+
+    //Provide a total cell for each family member:
+    for(familyMember of familyMembers) {
+        createTableDataCell(totalRow, totalScore[familyMember.id], 1);
+    }
+
+    createLineBreaks(tableScreen[0], 5);
 }

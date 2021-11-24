@@ -1,3 +1,13 @@
+function getYYYYMMDDDate(current0yesterday1) {
+    const currentDate = new Date();
+    const dateOffset = currentDate.getTimezoneOffset();
+    const testDate = currentDate.setDate(currentDate.getDate() - current0yesterday1)
+    
+
+    const returnDate = new Date(currentDate.getTime() + (dateOffset*60*1000)); 
+    return(currentDate.toISOString().split('T')[0]);
+}
+
 //Given a log that consists of 3 answers to questions, return the score:
 function calculateDailyScore(dailyLog) {
     const dailyPoints = dailyLog.foodBalance + dailyLog.foodQuantity + dailyLog.exercise;
