@@ -3,7 +3,7 @@
     {
       "id": 11,
       "firstName": "Homer",
-      "lastName": "Simpson",
+      "lastName": "Sampson",
       "logs": [
         {
           "id": 1,
@@ -78,7 +78,8 @@
           "foodQuantity": 1,
           "exercise": 0
         }
-      ]},
+      ]
+    },
     {
       "id": 29,
       "firstName": "Marge",

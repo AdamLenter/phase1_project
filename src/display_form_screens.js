@@ -69,3 +69,98 @@ function displayEnterEditDailyLogForm(familyMemberAndDate, enter1Edit2) {
     previousScreenLink.addEventListener("click", (event) => displayDailyPerformance(event.target.id));
     }
 }
+
+function displayEnterEditFamilyMemberForm(familyMemberID) {
+    let screenHeading;
+    let defaultFirstName;
+    let defaultLastName
+    
+    if(familyMemberID != undefined) {
+        //There is a family member. In edit mode:
+        screenHeading = "Edit Family Member";
+
+        const familyMember = familyMembers.find((familyMember) => familyMember.id == familyMemberID);
+        defaultFirstName = familyMember.firstName;
+        defaultLastName = familyMember.lastName;
+    }
+    else {
+        screenHeading = "Add New Family Member";
+        defaultFirstName = "";
+        defaultLastName = "";
+    }
+    
+    const enterEditFamilyScreen = createScreen(screenHeading);
+    const form = createForm(enterEditFamilyScreen);
+    form.id = familyMemberID;
+    const fieldset = createFieldset(form);
+
+    const firstNameTextbox = createTextBoxWithLabel(fieldset, "First name: ", defaultFirstName);
+    const lastNameTextbox = createTextBoxWithLabel(fieldset, "Last name: ", defaultLastName);
+
+    let button = createButtonDivWithButton(form, "Submit");
+
+    if(familyMemberID != undefined) {
+        //The family member id is not undefined. we are in edit mode:
+        button.id = familyMemberID;
+        
+        button.addEventListener("click", (event) => {
+            event.preventDefault();
+
+            const familyMemberID = event.target.id;
+            
+            const configurationObject = {
+                method: "PATCH",
+    
+                headers: {
+                    "Content-Type": "Application/json", 
+                    "Accept": "Application/json"
+                },
+                body: JSON.stringify({
+                    "firstName": firstNameTextbox.value, 
+                    "lastName": lastNameTextbox.value
+                })
+            }
+        fetch(`http://localhost:3000/familyMembers/${familyMemberID}`, configurationObject)
+            .then((response)=>response.json())
+            .then((familyMember) => {
+                //Gather the family
+                fetchFamily(showFamilyMembers);
+        })
+    })
+    }
+    else {
+        //In enter new contact mode:
+        button.addEventListener("click", (event) => {
+            event.preventDefault();
+            
+            const configurationObject = {
+                method: "POST",
+    
+                headers: {
+                    "Content-Type": "Application/json", 
+                    "Accept": "Application/json"
+                },
+                body: JSON.stringify({
+                    "firstName": firstNameTextbox.value, 
+                    "lastName": lastNameTextbox.value
+                })
+            }
+        fetch(`http://localhost:3000/familyMembers`, configurationObject)
+            .then((response)=>response.json())
+            .then((familyMember) => {
+                //Add the new family member to the array of family members:
+                const familyMemberID = familyMember.id;
+                familyMembers[familyMemberID] = {
+                    firstName: familyMember.firstName, 
+                    lastName: familyMember.lastName, 
+                }
+
+                //Add the id to the list of family member ids:
+                familyMemberIDs.push(familyMemberID);
+
+                //Return to the family member form:
+                showFamilyMembers();
+            })
+        })
+    }
+}

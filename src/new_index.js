@@ -2,11 +2,12 @@ let familyMembers;
 let dailyLogs;
 
 
-function fetchFamily() {
+function fetchFamily(nextAction) {
     fetch(`http://localhost:3000/familyMembers`) 
        .then((result) => result.json()) 
         .then((allFamilyMembers) => {
             familyMembers = allFamilyMembers;
+            
             document.getElementById("menu_icon").addEventListener("click", (event) => {
                 if(document.getElementById("navigationMenu").style.display === "block") {
                     //The menu is currently displayed. Hide it:
@@ -31,6 +32,10 @@ function fetchFamily() {
                 document.getElementById("navigationMenu").style.display = "none";
                 showOverallScoreboard()
             })
+
+            if(nextAction != undefined) {
+                nextAction();
+            }
         })
     }
 

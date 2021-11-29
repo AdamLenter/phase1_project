@@ -270,3 +270,28 @@ function displaySingleDayPerformance(familyMemberAndDate) {
     previousScreenLink.id = `${info["month"]}.${info["year"]}`;
     previousScreenLink.addEventListener("click", (event) => displayDailyPerformance(event.target.id));
 }
+
+function showFamilyMembers() {
+    const tableScreen = generateTableScreen("Family Members", "", "Family Member Info");
+    //Create a header row with "Year" in the first column with a link to data for the year:
+    const headerRow = createTableRow(tableScreen[2]);
+    const firstNameHeaderCell = createTableHeadingCell(headerRow, "First Name");
+    const lastNameHeaderCell = createTableHeadingCell(headerRow, "Last Name");
+    const editHeaderCell = createTableHeadingCell(headerRow);
+
+    for(familyMember of familyMembers) {
+        const dataRow = createTableRow(tableScreen[2]);
+
+        //Add a cell for the year:
+        const firstNameCell = createTableDataCell(dataRow, familyMember['firstName']);
+        const lastNameCell = createTableDataCell(dataRow, familyMember['lastName']);
+        const editCell = createTableDataCell(dataRow, "");
+
+        const editLink = document.createElement("a");
+        editLink.textContent = "edit";
+        editLink.id = familyMember.id;
+        editCell.appendChild(editLink);
+
+        editCell.addEventListener("click", (event) => displayEnterEditFamilyMemberForm(event.target.id));
+    }
+}
