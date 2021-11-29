@@ -118,3 +118,68 @@ function getMonths(year) {
     ]
 return months;
 }
+
+function getInfoFromFamilyMemberAndDate(familyMemberAndDate) {
+    let returnData = [];
+    returnData["familyMemberID"] = familyMemberAndDate.substring(0, familyMemberAndDate.indexOf("."));
+    
+    const date = familyMemberAndDate.substring(familyMemberAndDate.indexOf(".") + 1);
+    
+    returnData["year"] = date.substring(0, date.indexOf("."));
+    
+    const monthAndDateNumber = date.substring(date.indexOf(".") + 1);
+    
+    returnData["month"] = monthAndDateNumber.substring(0, monthAndDateNumber.indexOf("."));
+    returnData["dateNumber"] = monthAndDateNumber.substring(monthAndDateNumber.indexOf(".") + 1);
+
+    return returnData;
+}
+
+function createSelect(elementOnWhichToAppend, selectLabel, selectID, options) {
+    const label = document.createElement("label");
+    label.textContent = selectLabel;
+    elementOnWhichToAppend.appendChild(label);
+    
+    const select = document.createElement("select");
+    select.id = selectID;
+    elementOnWhichToAppend.appendChild(select);
+
+    for(let i = 0; i < options.length; i++) {
+        const option = document.createElement("option");
+        option.value = options[i].value;
+        option.textContent = options[i].text;
+        option.selected = options[i].selected;
+        select.appendChild(option);
+    }
+
+return;
+}
+
+function createYesNoSelectOptions(optionYesSelected1NoSelected0) {
+    let yesSelected;
+    let noSelected;
+
+    if(optionYesSelected1NoSelected0 == 1) {
+        yesSelected = "selected ";
+        noSelected = ""
+    }
+    else {
+        yesSelected = "";
+        noSelected = "selected "
+    }
+
+    const yesNoOption = [
+        {
+        value: 1, 
+        text: "Yes", 
+        selected: yesSelected
+    },
+        {
+        value: 0, 
+        text: "No", 
+        selected: noSelected
+    }
+    ]
+
+return yesNoOption;
+}

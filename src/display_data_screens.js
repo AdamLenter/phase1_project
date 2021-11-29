@@ -115,6 +115,7 @@ function displayAnnualPerformance(year) {
 
 //Screen to see single month performance
 function displayDailyPerformance(monthAndYear) {
+    console.log(monthAndYear);
     //Get the month and year:
     const month = parseInt(monthAndYear.substring(0, monthAndYear.indexOf(".")), 10);
     const year = monthAndYear.substring(monthAndYear.indexOf(".") + 1);
@@ -204,7 +205,7 @@ function displayDailyPerformance(monthAndYear) {
                     setScoreLink.textContent = "click to set";
                     setScoreCell.appendChild(setScoreLink);
                     
-                    setScoreLink.addEventListener("click", (event) => displayEnterEditDailyLogForm(event.target.id));
+                    setScoreLink.addEventListener("click", (event) => displayEnterEditDailyLogForm(event.target.id, 1));
                 }
             }
         }
@@ -220,4 +221,52 @@ function displayDailyPerformance(monthAndYear) {
     }
 
     createLineBreaks(tableScreen[0], 5);
+}
+
+function displaySingleDayPerformance(familyMemberAndDate) {
+    const info = getInfoFromFamilyMemberAndDate(familyMemberAndDate);
+    const months = getMonths(info["year"]);
+    
+    const monthName = months[info["month"] - 1].monthName;
+
+    //Get the family member's logs:
+    const familyMemberLogs = familyMembers.find((familyMember) => familyMember.id == info["familyMemberID"]);
+
+    const dailyLog = familyMemberLogs.logs.find((log) => log.year == info["year"] && log.month == info["month"] && log.dateNumber == info["dateNumber"]);
+
+    const logScreen = createScreen("Daily Log", `${familyMemberLogs.firstName} ${familyMemberLogs.lastName} - ${monthName} ${info["dateNumber"]}, ${info["year"]} `);
+
+    const paragraph = document.createElement("p");
+    logScreen.appendChild(paragraph);
+
+    paragraph.innerHTML = `I ate a healthy balance of food: <strong>${displayYes1No0(dailyLog.foodBalance)}</strong>
+        <br />
+        I ate an appropriate number of calories: <strong>${displayYes1No0(dailyLog.foodQuantity)}</strong>
+        <br /> 
+        I exercised vigorously for at least 30 minutes: <strong>${displayYes1No0(dailyLog.exercise)}</strong>
+        <br />`;
+    
+    logScreen.appendChild(paragraph);
+
+    const yesterdayDate = getYYYYMMDDDate(1);
+    let testDate;
+
+    if(info["dateNumber"] < 10) {
+        testDate = `${info["year"]}-${info["month"]}-0${info["dateNumber"]}`;
+    }
+    else {
+        testDate = `${info["year"]}-${info["month"]}-${info["dateNumber"]}`;
+    }
+    
+    if(testDate >= yesterdayDate) {
+        {
+        //This is not before yesterday. It can be edited:
+        let link = createCenteredLink(logScreen, "Click here to edit");
+        }
+    }
+
+    createLineBreaks(logScreen, 1);
+    let previousScreenLink = createCenteredLink(logScreen, "Return to previous screen");
+    previousScreenLink.id = `${info["month"]}.${info["year"]}`;
+    previousScreenLink.addEventListener("click", (event) => displayDailyPerformance(event.target.id));
 }
