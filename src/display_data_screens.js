@@ -111,6 +111,11 @@ function displayAnnualPerformance(year) {
     for(familyMember of familyMembers) {
         createTableDataCell(totalRow, totalScore[familyMember.id], 1);
     }
+
+    createLineBreaks(tableScreen[0], 1);
+    const returnLink = createCenteredLink(tableScreen[0], "Return to previous screen");
+    returnLink.addEventListener("click", (event) => showOverallScoreboard());
+    createLineBreaks(tableScreen[0], 5);
 }
 
 //Screen to see single month performance
@@ -219,6 +224,9 @@ function displayDailyPerformance(monthAndYear) {
         createTableDataCell(totalRow, totalScore[familyMember.id], 1);
     }
 
+    createLineBreaks(tableScreen[0], 1);
+    const returnLink = createCenteredLink(tableScreen[0], "Return to previous screen");
+    returnLink.addEventListener("click", (event) => displayAnnualPerformance(year));
     createLineBreaks(tableScreen[0], 5);
 }
 
