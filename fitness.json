@@ -82,9 +82,9 @@
           "month": 11,
           "dateNumber": 29,
           "year": 2021,
-          "foodBalance": 1,
-          "foodQuantity": 0,
-          "exercise": 1
+          "foodBalance": 0,
+          "foodQuantity": 1,
+          "exercise": 0
         }
       ]
     },

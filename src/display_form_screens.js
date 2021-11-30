@@ -72,6 +72,56 @@ function displayEnterEditDailyLogForm(familyMemberAndDate, enter1Edit2) {
     previousScreenLink.id = `${monthNumber}.${year}`;
     previousScreenLink.addEventListener("click", (event) => displayDailyPerformance(event.target.id));
     }
+    else {
+        //In edit mode mode. Find the log to edit:
+        let i
+        for(i = 0; i < familyMemberInfo.logs.length; i++) {
+            if(familyMemberInfo.logs[i].month == monthNumber && familyMemberInfo.logs[i].dateNumber == dateNumber && familyMemberInfo.logs[i].year == year) {
+                //This is a match. Set the defaults:
+                const balanceYesNoOption = createYesNoSelectOptions(familyMemberInfo.logs[i].foodBalance);
+                createSelect(fieldset, "I ate a healthy balance of food:", "foodBalanceSelect", balanceYesNoOption);
+                
+                const quantityYesNoOption = createYesNoSelectOptions(familyMemberInfo.logs[i].foodQauntity);
+                createSelect(fieldset, "I ate an appropriate number of calories:", "foodQuantitySelect", quantityYesNoOption);
+                
+                const exerciseYesNoOption = createYesNoSelectOptions(familyMemberInfo.logs[i].exercise);
+                createSelect(fieldset, "I exercised vigorously for at least 30 minutes:", "exerciseSelect", exerciseYesNoOption);
+                break;
+            }
+        }
+            
+        submitButton = createButtonDivWithButton(form, "Submit");
+        submitButton.addEventListener("click", (event) => {
+            event.preventDefault();
+
+            //We need to edit the entry in the log:
+            familyMemberInfo.logs[i].foodBalance = parseInt(document.getElementById("foodBalanceSelect").value, 10); 
+            familyMemberInfo.logs[i].foodQuantity = parseInt(document.getElementById("foodQuantitySelect").value, 10); 
+            familyMemberInfo.logs[i].exercise = parseInt(document.getElementById("exerciseSelect").value, 10);
+
+            const configurationObject = {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "Application/json", 
+                    "Accept": "Application/json", 
+
+                },
+                body: JSON.stringify({
+                    "logs": familyMemberInfo.logs
+                })
+            }
+        fetch(`http://localhost:3000/familyMembers/${parseInt(info['familyMemberID'], 10)}`, configurationObject)
+            .then((response)=>response.json())
+            .then((dailyLog) => {
+                displayDailyPerformance(`${monthNumber}.${year}`);
+            });
+        })
+        
+    createLineBreaks(enterEditLogScreen, 1);
+    let previousScreenLink = createCenteredLink(enterEditLogScreen, "Return to previous screen");
+    previousScreenLink.id = `${monthNumber}.${year}`;
+    previousScreenLink.addEventListener("click", (event) => displayDailyPerformance(event.target.id));
+    }
 }
 
 function displayEnterEditFamilyMemberForm(familyMemberID) {

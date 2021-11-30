@@ -115,7 +115,6 @@ function displayAnnualPerformance(year) {
 
 //Screen to see single month performance
 function displayDailyPerformance(monthAndYear) {
-    console.log(monthAndYear);
     //Get the month and year:
     const month = parseInt(monthAndYear.substring(0, monthAndYear.indexOf(".")), 10);
     const year = monthAndYear.substring(monthAndYear.indexOf(".") + 1);
@@ -249,19 +248,33 @@ function displaySingleDayPerformance(familyMemberAndDate) {
     logScreen.appendChild(paragraph);
 
     const yesterdayDate = getYYYYMMDDDate(1);
-    let testDate;
 
-    if(info["dateNumber"] < 10) {
-        testDate = `${info["year"]}-${info["month"]}-0${info["dateNumber"]}`;
+    let testMonth;
+    let testDateNumber;
+
+    if(info["month"] < 10) {
+        testMonth = `0${info["month"]}`;
     }
     else {
-        testDate = `${info["year"]}-${info["month"]}-${info["dateNumber"]}`;
+        testMonth = `${info["dateMonth"]}`;
     }
     
+    if(info["dateNumber"] < 10) {
+        testDateNumber = `0${info["dateNumber"]}`;
+    }
+    else {
+        testDateNumber = `${info["dateNumber"]}`;
+    }
+
+    const testDate = `${info.year}-${testMonth}-${testDateNumber}`;
+
     if(testDate >= yesterdayDate) {
         {
         //This is not before yesterday. It can be edited:
-        let link = createCenteredLink(logScreen, "Click here to edit");
+        const link = createCenteredLink(logScreen, "Click here to edit");
+        link.id = familyMemberAndDate;
+
+        link.addEventListener("click", (event) => displayEnterEditDailyLogForm(event.target.id, 2));
         }
     }
 
