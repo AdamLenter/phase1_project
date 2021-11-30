@@ -36,24 +36,28 @@ function displayEnterEditDailyLogForm(familyMemberAndDate, enter1Edit2) {
 
         submitButton.addEventListener("click", (event) => {
             event.preventDefault();
-            
+
+            //We need to create an object ot add to the log:
+            const newLog = {
+                month: monthNumber, 
+                dateNumber: dateNumber, 
+                year: year, 
+                foodBalance: parseInt(document.getElementById("foodBalanceSelect").value, 10), 
+                foodQuantity: parseInt(document.getElementById("foodQuantitySelect").value, 10), 
+                exercise: parseInt(document.getElementById("exerciseSelect").value, 10)
+            }
+
+            familyMemberInfo.logs.push(newLog);
+
             const configurationObject = {
                 method: "PATCH",
-                op: "add", 
-                path: "/logs",
-    
                 headers: {
                     "Content-Type": "Application/json", 
                     "Accept": "Application/json", 
 
                 },
                 body: JSON.stringify({
-                    "month": monthNumber, 
-                    "dateNumber": dateNumber, 
-                    "year": year, 
-                    "foodBalance": parseInt(document.getElementById("foodBalanceSelect").value, 10), 
-                    "foodQuantity": parseInt(document.getElementById("foodQuantitySelect").value, 10), 
-                    "exercise": parseInt(document.getElementById("exerciseSelect").value, 10)
+                    "logs": familyMemberInfo.logs
                 })
             }
         fetch(`http://localhost:3000/familyMembers/${parseInt(info['familyMemberID'], 10)}`, configurationObject)
