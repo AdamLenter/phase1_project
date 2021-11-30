@@ -137,6 +137,12 @@
           "exercise": 1
         }
       ]
+    },
+    {
+      "firstName": "Abe",
+      "lastName": "Simpson",
+      "logs": [],
+      "id": 33
     }
   ]
 }

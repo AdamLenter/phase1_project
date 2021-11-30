@@ -142,24 +142,15 @@ function displayEnterEditFamilyMemberForm(familyMemberID) {
                 },
                 body: JSON.stringify({
                     "firstName": firstNameTextbox.value, 
-                    "lastName": lastNameTextbox.value
+                    "lastName": lastNameTextbox.value, 
+                    "logs": []
                 })
             }
         fetch(`http://localhost:3000/familyMembers`, configurationObject)
             .then((response)=>response.json())
             .then((familyMember) => {
-                //Add the new family member to the array of family members:
-                const familyMemberID = familyMember.id;
-                familyMembers[familyMemberID] = {
-                    firstName: familyMember.firstName, 
-                    lastName: familyMember.lastName, 
-                }
-
-                //Add the id to the list of family member ids:
-                familyMemberIDs.push(familyMemberID);
-
-                //Return to the family member form:
-                showFamilyMembers();
+                //Retrieve the new list of contacts and return to the family member form:
+                fetchFamily(showFamilyMembers);
             })
         })
     }

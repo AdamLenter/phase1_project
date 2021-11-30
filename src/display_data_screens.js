@@ -294,4 +294,11 @@ function showFamilyMembers() {
 
         editCell.addEventListener("click", (event) => displayEnterEditFamilyMemberForm(event.target.id));
     }
+
+    createLineBreaks(tableScreen[0], 1);
+
+    let link = createCenteredLink(tableScreen[0], "Create new family member");
+    link.addEventListener("click", (event) => {
+        displayEnterEditFamilyMemberForm()
+    })
 }
