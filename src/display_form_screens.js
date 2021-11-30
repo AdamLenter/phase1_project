@@ -208,4 +208,9 @@ function displayEnterEditFamilyMemberForm(familyMemberID) {
             })
         })
     }
+
+    //Place a link to the family members screen:
+    createLineBreaks(enterEditFamilyScreen, 2);
+    const returnLink = createCenteredLink(enterEditFamilyScreen, "Return to previous screen");
+    returnLink.addEventListener("click", (event) => showFamilyMembers());
 }
