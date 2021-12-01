@@ -86,10 +86,10 @@ function displayAnnualPerformance(year) {
         monthCell.addEventListener("click", (event) => displayDailyPerformance(event.target.id));
 
         //Now add cells for the individuals' total scores:
-        for(familyMember of familyMembers) {
+        for(const familyMember of familyMembers) {
             const familyMemberMonthLogs = familyMember.logs.filter((log) => log.year == year && log.month === (i + 1));
             
-            if(familyMemberMonthLogs != undefined) {
+            if(familyMemberMonthLogs) {
                 //There is at least one element in the row. Find the total:
                 monthScore = createTotalScoreFromGroupOfLogs(familyMemberMonthLogs);
                 createTableDataCell(dataRow, monthScore);
